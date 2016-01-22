@@ -68,7 +68,7 @@ static QNetworkReply *uploadPayload(const QHttpPart &payload, const qint64 &size
 	multiPart->append(payload);
 
 	QNetworkReply *reply = networkMgr.post(request, multiPart);
-	QObject::connect(reply, QNetworkReply::uploadProgress, [](qint64 bytes, qint64 total)
+	QObject::connect(reply, &QNetworkReply::uploadProgress, [](qint64 bytes, qint64 total)
 	{
 		progressDialog->setValue(bytes);
 		progressDialog->setMaximum(total);
