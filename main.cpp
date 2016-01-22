@@ -55,8 +55,6 @@ static bool loadConfig()
 
 static QNetworkReply *uploadPayload(const QHttpPart &payload, const qint64 &size)
 {
-	qDebug() << __func__ << size;
-
 	const QNetworkRequest request(uploadUrl);
 	QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
 
