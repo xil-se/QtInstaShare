@@ -3,5 +3,8 @@ Makefile*
 debug/*
 release/*
 ui_*.h
+moc_*.cpp
+qrc_*.cpp
+*.o
 bin/config.json
 bin/InstaShare*
