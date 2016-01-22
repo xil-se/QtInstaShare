@@ -1,0 +1,7 @@
+Instashare.pro.*
+Makefile*
+debug/*
+release/*
+ui_*.h
+bin/config.json
+bin/InstaShare*

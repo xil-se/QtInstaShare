@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>xil.svg</file>
+        <file>clipboard.png</file>
+        <file>file.png</file>
+        <file>monitor.png</file>
+        <file>monitors.png</file>
+    </qresource>
+</RCC>
