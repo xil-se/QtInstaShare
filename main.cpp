@@ -29,7 +29,7 @@ static const int timeoutMs = 5000;
 
 static bool loadConfig()
 {
-    QStringList locations = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
+    QStringList locations = QStandardPaths::standardLocations(QStandardPaths::AppConfigLocation);
     locations << qApp->applicationDirPath();
     locations.removeDuplicates();
 
