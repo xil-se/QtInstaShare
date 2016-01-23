@@ -220,27 +220,32 @@ int main(int argc, char *argv[])
 
 	// setup context menu
 	QMenu contextMenu;
-	contextMenu.addAction(QIcon(":/clipboard.png"), QObject::tr("Clipboard"), uploadClipboard);
+	QAction *clipboardAction = contextMenu.addAction(QIcon(":/clipboard.png"), QObject::tr("Clipboard"));
+	QObject::connect(clipboardAction, &QAction::triggered, uploadClipboard);
 
 	if(app.screens().size() == 1) {
-		contextMenu.addAction(QIcon(":/monitor.png"), QObject::tr("Screenshot"), uploadScreenshot);
+		QAction *screenshotAction = contextMenu.addAction(QIcon(":/monitor.png"), QObject::tr("Screenshot"));
+		QObject::connect(screenshotAction, &QAction::triggered, uploadScreenshot);
 	} else {
 		QMenu *screenShotMenu = contextMenu.addMenu(QIcon(":/monitors.png"), QObject::tr("Screenshot"));
 		for(int i = 0; i < app.screens().size(); ++i) {
-			screenShotMenu->addAction(QIcon(":/monitor.png"), QString("Screen #%1").arg(i + 1), [i]()
+			QAction *screenshotAction = screenShotMenu->addAction(QIcon(":/monitor.png"), QString("Screen #%1").arg(i + 1));
+			QObject::connect(screenshotAction, &QAction::triggered, [i]()
 			{
 				uploadScreenshot(i);
 			});
 		}
 	}
 
-	contextMenu.addAction(QIcon(":/file.png"), QObject::tr("File"), []()
+	QAction *fileAction = contextMenu.addAction(QIcon(":/file.png"), QObject::tr("File"));
+	QObject::connect(fileAction, &QAction::triggered, []()
 	{
 		const QString fileName = QFileDialog::getOpenFileName(nullptr, QObject::tr("File to upload"));
 		uploadFile(fileName);
 	});
 	contextMenu.addSeparator();
-	contextMenu.addAction(QObject::tr("Quit"), &app, &QApplication::quit);
+	QAction *quitAction = contextMenu.addAction(QObject::tr("Quit"));
+	QObject::connect(quitAction, &QAction::triggered, &app, &QApplication::quit);
 
 	// setup tray icon
 	QSystemTrayIcon trayIcon(QIcon(":/xil.svg"));
