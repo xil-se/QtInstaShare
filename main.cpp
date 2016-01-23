@@ -3,6 +3,7 @@
 
 #include <QNetworkRequest>
 #include <QSystemTrayIcon>
+#include <QStandardPaths>
 #include <QJsonDocument>
 #include <QNetworkReply>
 #include <QApplication>
@@ -28,27 +29,38 @@ static const int timeoutMs = 5000;
 
 static bool loadConfig()
 {
-	QFile configFile(qApp->applicationDirPath() + "/config.json");
-	if(!configFile.exists()) {
-		QMessageBox::critical(nullptr, QObject::tr("Epic fail"), QObject::tr("Config file (config.json) not found!"));
-		return false;
-	}
+    QStringList locations = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
+    locations << qApp->applicationDirPath();
+    locations.removeDuplicates();
 
-	if(!configFile.open(QFile::ReadOnly)) {
-		QMessageBox::critical(nullptr, QObject::tr("Epic fail"), QObject::tr("Can't open config file (config.json)!"));
-		return false;
-	}
+    for(const QString &location : locations) {
+        QFile configFile(location + "/config.json");
+        if(!configFile.exists())
+            continue;
 
-	const QJsonDocument config = QJsonDocument::fromJson(configFile.readAll());
-	secretWord = config.object().value("secret").toString();
-	uploadUrl  = config.object().value("url").toString();
+        if(!configFile.open(QFile::ReadOnly)) {
+            QMessageBox::critical(nullptr, QObject::tr("Epic fail"), QObject::tr("Can't open config file (%1/config.json)!").arg(location));
+            return false;
+        }
 
-	configFile.close();
+        const QJsonDocument config = QJsonDocument::fromJson(configFile.readAll());
+        secretWord = config.object().value("secret").toString();
+        uploadUrl  = config.object().value("url").toString();
 
-	if(secretWord.isEmpty() || uploadUrl.isEmpty()) {
-		QMessageBox::critical(nullptr, QObject::tr("Epic fail"), QObject::tr("You need to fill in the values in the config file (config.json)!"));
-		return false;
-	}
+        configFile.close();
+
+        if(secretWord.isEmpty() || uploadUrl.isEmpty()) {
+            QMessageBox::critical(nullptr, QObject::tr("Epic fail"), QObject::tr("You need to fill in the values in the config file (%1/config.json)!").arg(location));
+            return false;
+        }
+
+        break;
+    }
+
+    if(secretWord.isEmpty() || uploadUrl.isEmpty()) {
+        QMessageBox::critical(nullptr, QObject::tr("Epic fail"), QObject::tr("Could not find a valid config.json in any of these locations:\n%1").arg(locations.join('\n')));
+        return false;
+    }
 
 	return true;
 }
@@ -207,7 +219,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	if(!loadConfig())
+    if(!loadConfig())
 		return -1;
 
 	// setup progress stuff
