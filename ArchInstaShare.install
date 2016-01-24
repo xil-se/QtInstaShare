@@ -1,0 +1,9 @@
+post_install() {
+  echo "don't forget to install config to:"
+  echo "~/.config/xil.se/InstaShare/config.json"
+  echo "Sample config:"
+  echo '{
+	"secret": "",
+	"url": ""
+}'
+}
