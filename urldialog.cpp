@@ -12,7 +12,7 @@ UrlDialog::UrlDialog(const QString &url)
 
 	m_ui->lineEdit->setText(url);
 	m_ui->lineEdit->selectAll();
-	connect(m_ui->lineEdit, &QLineEdit::editingFinished, [&]()
+	connect(m_ui->lineEdit, &QLineEdit::editingFinished, this, [&]()
 	{
 		// close dialog if focus lost and link in clipboard
 		if(qApp->clipboard()->text() == m_ui->lineEdit->text())

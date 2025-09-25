@@ -33,7 +33,7 @@ static bool loadConfig()
     locations << qApp->applicationDirPath();
     locations.removeDuplicates();
 
-    for(const QString &location : locations) {
+   for(const QString &location : qAsConst(locations)) {
         QFile configFile(location + "/config.json");
         if(!configFile.exists())
             continue;
@@ -78,12 +78,12 @@ static QNetworkReply *uploadPayload(const QHttpPart &payload, const qint64 &size
 	multiPart->append(payload);
 
 	QNetworkReply *reply = networkMgr.post(request, multiPart);
-	QObject::connect(reply, &QNetworkReply::uploadProgress, [](qint64 bytes, qint64 total)
+	QObject::connect(reply, &QNetworkReply::uploadProgress, reply, [](qint64 bytes, qint64 total)
 	{
 		progressDialog->setValue(bytes);
 		progressDialog->setMaximum(total);
 	});
-	QObject::connect(reply, &QNetworkReply::readyRead, [reply]()
+	QObject::connect(reply, &QNetworkReply::readyRead, reply, [reply]()
 	{
 		progressTimer.stop();
 		progressDialog->hide();
@@ -93,7 +93,7 @@ static QNetworkReply *uploadPayload(const QHttpPart &payload, const qint64 &size
 		UrlDialog *urlDialog = new UrlDialog(data);
 		QObject::connect(urlDialog, &QDialog::accepted, urlDialog, &QObject::deleteLater);
 
-		urlDialog->setWindowTitle(QObject::tr("Your link"));
+		urlDialog->setWindowTitle(QObject::tr("Upload complete"));
 		urlDialog->show();
 
 		reply->deleteLater();

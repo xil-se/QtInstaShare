@@ -7,6 +7,7 @@ UploadDialog::UploadDialog()
 	m_ui->setupUi(this);
 
 	setWindowFlags(windowFlags() & (~Qt::WindowContextHelpButtonHint));
+	setWindowTitle(tr("Upload in progress"));
 }
 
 UploadDialog::~UploadDialog()
